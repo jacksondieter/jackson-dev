@@ -12,16 +12,16 @@ export default function NaviBar({ siteTitle }) {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto" as="ul">
           <Nav.Item as="li">
-            <Nav.Link to="https://github.com/jacksondieter">
+            <a className='nav-link' href="https://github.com/jacksondieter">
               <FaGithub />
               GitHub
-            </Nav.Link>
+            </a>
           </Nav.Item>
           <Nav.Item as="li">
-            <Nav.Link to="https://www.linkedin.com/in/jacksondieter/">
+            <a className='nav-link' href="https://www.linkedin.com/in/jacksondieter/">
               <FaLinkedin />
               Linkedin
-            </Nav.Link>
+            </a>
           </Nav.Item>
         </Nav>
       </Navbar.Collapse>

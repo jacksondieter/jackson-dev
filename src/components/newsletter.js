@@ -99,7 +99,7 @@ function useNewsletter() {
     }
     if(isInitalMount.current){
       isInitalMount.current = false
-    }else{
+    }else if(email){
       sendEmail()
     }
     
