@@ -1,73 +1,109 @@
-import React, { Component } from "react"
+import React, { useState,useEffect,useRef } from "react"
 import addToMailchimp from "gatsby-plugin-mailchimp"
 
-class Newsletter extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      showSuccess: false,
-      showError: false,
-      successMsg: "",
-      errorMsg: "",
-    }
-  }
-  sleep = delay => {
-    var start = new Date().getTime()
-    while (new Date().getTime() < start + delay);
-  }
-  onSubmit = async event => {
-    event.preventDefault()
-    const email = event.target.yourmail.value || null
-    console.log(email)
-    if (!email) {
-      return
-    }
+function Newsletter(props) {
+  const { state, onSubmit } = useNewsletter()
 
-    try {
-      const result = await addToMailchimp(email, {})
-      console.log(result.msg)
-      this.setState({ showSuccess: true })
-      this.setState({ successMsg: result.msg })
-      this.setState({ showError: false })
-      this.setState({ errorMsg: "" })
-    } catch (err) {
-      console.log(err)
-      this.setState({ showSuccess: false })
-      this.setState({ successMsg: "" })
-      this.setState({ showError: true })
-      this.setState({ errorMsg: err })
-    }
-  }
-  render() {
-    return (
-      <>
-        <form onSubmit={this.onSubmit}>
-          <div className="input-group input-group-newsletter">
-            <input
-              name="yourmail"
-              type="email"
-              className="form-control"
-              placeholder="Enter email..."
-              aria-label="Enter email..."
-              aria-describedby="basic-addon"
-            />
-            <div className="input-group-append">
-              <button className="btn btn-secondary" type="submit">
-                Notify Me!
-              </button>
+  return (
+    <div className="subscribe">
+      <h5 className="info-text">
+        Join to the newsletter list. We keep you posted.
+      </h5>
+      <div className="row ">
+        <div className="col">
+          <form
+            className="form-inline justify-content-md-center"
+            onSubmit={onSubmit}
+          >
+            <div className="input-group">
+              <label className="sr-only" htmlFor="inputEmail">
+                Email address
+              </label>
+              <input
+                type="email"
+                className="form-control transparent"
+                placeholder="Your email here..."
+                aria-label="Your email here..."
+                name="yourmail"
+              />
+              <div className="input-group-append">
+                <button className="btn btn-secondary btn-fill" type="submit">
+                  Notify Me!
+                </button>
+              </div>
             </div>
-          </div>
-        </form>
-        <br />
-        {this.state.showSuccess ? (
-          <div className={"alert alert-success"}>{this.state.successMsg}</div>
-        ) : null}
-        {this.state.showError ? (
-          <div className={"alert alert-danger"}>{this.state.errorMsg}</div>
-        ) : null}
-      </>
-    )
-  }
+          </form>
+        </div>
+      </div>
+      <br />
+      {state.showSuccess ? (
+        <div className={"alert alert-success"}>{state.successMsg}</div>
+      ) : null}
+      {state.showError ? (
+        <div className={"alert alert-danger"}>{state.errorMsg}</div>
+      ) : null}
+    </div>
+  )
 }
 
 export default Newsletter
+
+function useNewsletter() {
+  const initialState = {
+    showSuccess: false,
+    showError: false,
+    successMsg: "",
+    errorMsg: "",
+  }
+  const [state, setState] = useState(initialState)
+  const [email, setEmail] = useState('')
+  const isInitalMount = useRef(true)
+
+
+  const onSubmit = async event => {
+    event.preventDefault()
+    const emailVal = event.target.yourmail.value || null
+    console.log(emailVal)
+    if (!emailVal) {
+      return
+    }
+    setEmail(emailVal)
+  }
+
+  useEffect(() => {
+    async function delay(time) {
+      return new Promise(function (resolve) {
+        setTimeout(resolve, time)
+      })
+    }
+    async function sendEmail() {
+      try {
+        const result = await addToMailchimp(email, {})
+        const msg = result.msg.split('<')[0]
+        setState({
+          showSuccess: true,
+          successMsg: msg,
+          showError: false,
+          errorMsg: "",
+        })
+      } catch (err) {
+        setState({
+          showSuccess: false,
+          successMsg: "",
+          showError: true,
+          errorMsg: err,
+        })
+      }finally{
+        delay(4000).then(()=>setState(initialState))
+      }
+    }
+    if(isInitalMount.current){
+      isInitalMount.current = false
+    }else{
+      sendEmail()
+    }
+    
+  }, [email])
+
+  return { state, onSubmit }
+}

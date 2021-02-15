@@ -1,56 +1,36 @@
 import React from "react"
 
+import { useStaticQuery, graphql } from "gatsby"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
-import { FaTwitter, FaLinkedin, FaGithub } from "react-icons/fa"
 import Newsletter from "../components/newsletter"
-import { Video } from "../components/video"
+import NaviBar from "../components/navibar"
 
-const IndexPage = () => (
+const IndexPage = () => {
+  const data = useStaticQuery(graphql`
+    query SiteTitleQuery {
+      site {
+        siteMetadata {
+          title
+        }
+      }
+    }
+  `)
+  return(
   <Layout>
     <SEO title="Jackson dev" />
-    <div className="overlay"></div>
-    <Video />
-
-    <div className="masthead">
-      <div className="masthead-bg"></div>
-      <div className="container h-100">
-        <div className="row h-100">
-          <div className="col-12 my-auto">
-            <div className="masthead-content text-white py-5 py-md-0">
-              <h1 className="mb-3">Coming Soon!</h1>
-              <p className="mb-5">
-                We're working hard to finish the development of this site!
-                <br/> Sign up for updates using the
-                form below!!
-              </p>
-              <Newsletter />
-            </div>
-          </div>
+    <NaviBar siteTitle={data.site.siteMetadata?.title || `Title`} />
+    <div className="main">      
+      <div className="container">
+        <h1 className="logo cursive">Code, eat, sleep, repeat</h1>
+        <div className="content">
+          <h4 className="motto">Really awesome apps coming soon.</h4>
+          <Newsletter />
         </div>
       </div>
     </div>
-
-    <div className="social-icons">
-      <ul className="list-unstyled text-center mb-0">
-        <li className="list-unstyled-item">
-          <a href="#">
-            <FaTwitter />
-          </a>
-        </li>
-        <li className="list-unstyled-item">
-          <a href="#">
-            <FaLinkedin />
-          </a>
-        </li>
-        <li className="list-unstyled-item">
-          <a href="#">
-            <FaGithub />
-          </a>
-        </li>
-      </ul>
-    </div>
   </Layout>
-)
+)}
 
 export default IndexPage
+
