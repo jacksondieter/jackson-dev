@@ -42,9 +42,7 @@ module.exports = {
       resolve: `gatsby-plugin-google-fonts`,
       options: {
         fonts: [
-          `Source Sans Pro\:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i`,
-          `Merriweather\:300,300i,400,400i,700,700i,900,900i`,
-          `Grand Hotel\:400,400i,500,500i,900,900i`,
+          `Grand Hotel\:400,400i`,
         ],
         display: "swap",
       },
