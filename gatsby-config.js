@@ -8,6 +8,7 @@ module.exports = {
     description: `Jackson dev coming soon`,
     author: `@jacksondieter`,
   },
+  pathPrefix:'/jackson-dev',
   plugins: [
     `gatsby-plugin-react-helmet`,
     {
